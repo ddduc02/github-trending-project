@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/ddduc02/gh-trending/db"
 	"github.com/ddduc02/gh-trending/handler"
+	repoimplement "github.com/ddduc02/gh-trending/repository/repo_implement"
+	"github.com/ddduc02/gh-trending/router"
 	"github.com/labstack/echo/v4"
 )
 
@@ -20,9 +22,13 @@ func main() {
 	defer sql.Close()
 
 	e := echo.New()
-	e.GET("/", handler.Welcome)
-	e.GET("/user/sign-in", handler.HandleSignIn)
-	e.GET("/user/sign-up", handler.HandleSignUp)
-
+	userHandler := handler.UserHandler{
+		UserRepo: repoimplement.NewUserRepo(sql),
+	}
+	api := router.API{
+		Echo:        e,
+		UserHandler: userHandler,
+	}
+	api.SetupRouter()
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -2,7 +2,11 @@ module github.com/ddduc02/gh-trending
 
 go 1.21.0
 
-require github.com/labstack/echo/v4 v4.11.1
+require (
+	github.com/jmoiron/sqlx v1.3.5
+	github.com/labstack/echo/v4 v4.11.1
+	github.com/lib/pq v1.10.9
+)
 
 require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
@@ -12,18 +16,21 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.9.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
+	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/go-playground/validator/v10 v10.15.4 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/godror/godror v0.24.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/google/uuid v1.3.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
-	github.com/jmoiron/sqlx v1.3.5 // indirect
-	github.com/lib/pq v1.10.9 // indirect
+	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-oci8 v0.1.1 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mattn/go-sqlite3 v1.14.15 // indirect
@@ -41,7 +48,7 @@ require (
 
 require (
 	github.com/labstack/echo v3.3.10+incompatible
-	github.com/labstack/gommon v0.4.0 // indirect
+	github.com/labstack/gommon v0.4.0
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
