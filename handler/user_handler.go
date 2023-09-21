@@ -65,6 +65,16 @@ func (u *UserHandler) HandleSignUp(c echo.Context) error {
 			Message:    err.Error(),
 		})
 	}
+	token, err := security.GenerateToken(user)
+	if err != nil {
+		log.Error(err)
+		return c.JSON(http.StatusInternalServerError, models.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+			Data:       nil,
+		})
+	}
+	user.Token = token
 	return c.JSON(http.StatusOK, models.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Sign up successfully",
@@ -72,8 +82,53 @@ func (u *UserHandler) HandleSignUp(c echo.Context) error {
 	})
 }
 func (u *UserHandler) HandleSignIn(c echo.Context) error {
-	return c.JSON(http.StatusOK, echo.Map{
-		"user":  "DucDO",
-		"email": "ducdo@gmail.com",
+	req := request.RequestSignIp{}
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, models.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    err.Error(),
+		})
+	}
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		log.Error(err.Error())
+		return c.JSON(http.StatusBadRequest, models.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    err.Error(),
+			Data:       nil,
+		})
+	}
+	user, err := u.UserRepo.CheckLogin(c.Request().Context(), req)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, models.Response{
+			StatusCode: http.StatusUnauthorized,
+			Message:    err.Error(),
+			Data:       nil,
+		})
+	}
+	check := security.CompareHashAndPassword(req.Password, user.Password)
+	if !check {
+		return c.JSON(http.StatusUnauthorized, models.Response{
+			StatusCode: http.StatusUnauthorized,
+			Message:    "Login failed",
+			Data:       nil,
+		})
+	}
+	token, err := security.GenerateToken(user)
+	if err != nil {
+		log.Error(err)
+		return c.JSON(http.StatusInternalServerError, models.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+			Data:       nil,
+		})
+	}
+	user.Token = token
+	// set password  = "" trước khi trả về cho người dùng
+	user.Password = ""
+	return c.JSON(http.StatusOK, models.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Login successfully",
+		Data:       user,
 	})
 }

@@ -2,11 +2,13 @@ package repoimplement
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
 	"github.com/ddduc02/gh-trending/db"
 	"github.com/ddduc02/gh-trending/models"
+	"github.com/ddduc02/gh-trending/models/request"
 	"github.com/ddduc02/gh-trending/repository"
 	"github.com/labstack/gommon/log"
 )
@@ -17,6 +19,20 @@ type UserRepoImplement struct {
 
 func NewUserRepo(sql *db.Sql) repository.UserRepo {
 	return &UserRepoImplement{sql: sql}
+}
+
+func (u *UserRepoImplement) CheckLogin(context context.Context, loginReq request.RequestSignIp) (models.User, error) {
+	var user models.User
+
+	err := u.sql.Db.GetContext(context, &user, "SELECT * FROM users WHERE email=$1", loginReq.Email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, errors.New("User is not found")
+		}
+		log.Error(err.Error())
+		return user, err
+	}
+	return user, nil
 }
 
 func (u UserRepoImplement) SaveUser(context context.Context, user models.User) (models.User, error) {
