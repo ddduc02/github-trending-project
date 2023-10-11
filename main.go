@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	sql := &db.Sql{
 		Host:     "localhost",
 		Port:     5432,

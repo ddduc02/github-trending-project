@@ -48,3 +48,29 @@ func (u UserRepoImplement) SaveUser(context context.Context, user models.User) (
 	}
 	return user, nil
 }
+
+func (u *UserRepoImplement) SelectUserById(context context.Context, userId string) (models.User, error) {
+	var user models.User
+	err := u.sql.Db.GetContext(context, &user, "SELECT * FROM users WHERE user_id=$1", userId)
+	if err != nil {
+		log.Error(err.Error())
+		return user, errors.New("Select user Failed")
+	}
+	return user, nil
+}
+
+func (u *UserRepoImplement) UpdateUser(context context.Context, user models.User) (models.User, error) {
+	sqlStatement := `UPDATE users SET full_name = :full_name,
+										email = :email,
+										updated_at = COALESCE (:updated_at, updated_at)
+							WHERE user_id = :user_id
+	
+	`
+	user.UpdatedAt = time.Now()
+	_, err := u.sql.Db.NamedExecContext(context, sqlStatement, user)
+	if err != nil {
+		log.Error(err)
+		return user, err
+	}
+	return user, nil
+}
